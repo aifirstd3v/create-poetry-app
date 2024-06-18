@@ -39,10 +39,142 @@ Setting up a Python project with specific requirements can be a hassle. Our scri
    ```
 3. **Run the Script**:
    ```sh
-   ./create-poetry-project
+   create-poetry-project
    ```
 4. **Follow the Prompts**: Enter the required information when prompted.
 5. **Start Coding**: Your new Poetry project is ready to go!
+
+---
+
+
+The script can be run with various options to specify the project details. The options are:
+
+- `-y`: Use all default values for everything except the project name.
+- `-p`: Set the project name.
+- `-n`: Set the internal project name.
+- `-v`: Set the Python version.
+- `-u`: Set the upper Python version limit.
+- `-d`: Set the project description.
+- `-a`: Set the author name.
+- `-e`: Set the author email.
+- `-c`: Set the virtual environment configuration (`true` or `false`).
+
+If no options are provided, the script will prompt for the necessary information interactively.
+
+#### Examples
+
+1. **Run the script with all default values except project name**:
+   ```sh
+   create-poetry-app -y -p myproject
+   ```
+
+2. **Run the script with specified project name and Python version**:
+   ```sh
+   create-poetry-app -p myproject -v 3.8 -u 3.10
+   ```
+
+3. **Run the script interactively to input all details**:
+   ```sh
+   create-poetry-app
+   ```
+
+#### Command Line Options
+
+| Option | Description |
+|--------|-------------|
+| `-y`   | Use all default values for everything except the project name. |
+| `-p`   | Set the project name. |
+| `-n`   | Set the internal project name. |
+| `-v`   | Set the Python version. |
+| `-u`   | Set the upper Python version limit. |
+| `-d`   | Set the project description. |
+| `-a`   | Set the author name. |
+| `-e`   | Set the author email. |
+| `-c`   | Set the virtual environment configuration (`true` or `false`). |
+
+#### Example Workflow
+
+Here is an example workflow when running the script with no options:
+
+1. The script will prompt for the project name:
+   ```
+   Enter project name:
+   ```
+   The user inputs:
+   ```
+   matrixworld
+   ```
+
+2. The script will prompt for the internal project name (default: `main`):
+   ```
+   Enter your package name (default: main):
+   ```
+   The user inputs:
+   ```
+   singularity
+   ```
+
+3. The script will prompt for the Python version (default: `3.12`):
+   ```
+   Enter Python version (default: 3.12):
+   ```
+   The user inputs:
+   ```
+   3.11
+   ```
+
+4. The script will prompt for the upper Python version limit (default: `3.12`):
+   ```
+   Enter upper Python version limit (default: 3.12):
+   ```
+   The user inputs:
+   ```
+   3.13
+   ```
+
+5. The script will prompt for the project description (default: `""`):
+   ```
+   Enter project description (default: ):
+   ```
+   The user inputs:
+   ```
+   My Project Matrix Multiverse
+   ```
+
+6. The script will prompt for the author name (default: `Your Name`):
+   ```
+   Enter author name (default: Your Name):
+   ```
+   The user inputs:
+   ```
+   Smith Neo
+   ```
+
+7. The script will prompt for the author email (default: `you@example.com`):
+   ```
+   Enter author email (default: you@example.com):
+   ```
+   The user inputs:
+   ```
+   aifirstd3v@matrix.universe
+   ```
+
+8. The script will prompt for the virtual environment configuration (default: `true`):
+   ```
+   Set virtualenvs.in-project to true/false (default: true):
+   ```
+   The user inputs:
+   ```
+   true
+   ```
+
+9. The script will then create the project with the specified details, set up the virtual environment, and activate it:
+   ```
+   Project 'myproject' created and virtual environment activated with Python 3.11
+   ```
+
+This workflow demonstrates the interactive mode where the user is prompted for each piece of information if not provided via command line options.
+
 
 ---
 
@@ -116,44 +248,6 @@ To make the `create-poetry-app` script easily accessible from anywhere in your t
 
 By following these steps, you'll make `create-poetry-app` easily accessible, streamlining your workflow and allowing you to set up new Poetry projects quickly and efficiently from anywhere in your terminal.
 
-
----
-
-## Example
-
-```sh
-$ ./create-poetry-project
-
-Enter project name (default: projectname):
-matrixworld
-Enter your project name (default: main):
-singularity
-Enter Python version (default: 3.12):
-3.8
-Enter upper Python version limit (default: 4.0):
-3.13
-Enter project description (default: ):
-Project Matrix Multiverse
-Enter author name (default: Your Name):
-aifirstd3v   
-Enter author email (default: you@example.com):
-aifirstd3v@universe.8
-Invalid email format. Please enter a valid email address.
-Enter author email (default: you@example.com):
-aifirstd3v@33.universe
-Set virtualenvs.in-project to true/false (default: true):
-
-Created package singularity in matrixworld
-Creating virtualenv singularity in ~/matrixworld/.venv
-Using virtualenv: ~/matrixworld/.venv
-Updating dependencies
-Resolving dependencies... (0.1s)
-
-Writing lock file
-
-Installing the current project: singularity (0.1.0)
-Project 'matrixworld' created and virtual environment activated with Python 3.10
-```
 
 ---
 
