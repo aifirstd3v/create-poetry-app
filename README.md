@@ -7,7 +7,7 @@
 Are you tired of the cumbersome process of setting up a new Python project with specific requirements? Look no further! Our shell script automates the entire process, making your life as a developer smoother and more efficient. Introducing the **Ultimate Poetry Project Setup Script**!
 
 `The issue this project is trying to address was kind of resolved in version 2.0 of Poetry, so I believe it will be helpful to users who are still using version 1.x.` 
-
+`The ultimate goal of this project is to upgrade it into a project creation tool with advanced and diverse features, similar to tools like create-react-app and create-next-app, which even the latest version of Poetry does not provide.`
 ---
 
 ## Features:
