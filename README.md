@@ -46,51 +46,49 @@ Setting up a Python project with specific requirements can be a hassle. Our scri
 
 ---
 
+## Command-Line Options
 
-The script can be run with various options to specify the project details. The options are:
+The script accepts the following command-line options:
 
-- `-y`: Use all default values for everything except the project name.
-- `-p`: Set the project name.
-- `-n`: Set the internal project name.
-- `-v`: Set the Python version.
-- `-u`: Set the upper Python version limit.
-- `-d`: Set the project description.
-- `-a`: Set the author name.
-- `-e`: Set the author email.
-- `-c`: Set the virtual environment configuration (`true` or `false`).
+- `-y` : Use default values for all prompts.
+- `-p` : Set the project name.
+- `-n` : Set the package name.
+- `-v` : Set the Python version (supports semver specifiers like `^3.12` or `~3.12`).
+- `-u` : Set an optional upper Python version limit.
+- `-d` : Set the project description.
+- `-a` : Set the author name.
+- `-e` : Set the author email.
+- `-c` : Set the virtual environment configuration (`true` or `false`).
 
-If no options are provided, the script will prompt for the necessary information interactively.
+### Examples
 
-#### Examples
+#### Example 1: Using Defaults
 
-1. **Run the script with all default values except project name**:
-   ```sh
-   create-poetry-app -y -p myproject
-   ```
+To create a new project using default values for all prompts:
 
-2. **Run the script with specified project name and Python version**:
-   ```sh
-   create-poetry-app -p myproject -v 3.8 -u 3.10
-   ```
+```sh
+create-poetry-app -y
+```
 
-3. **Run the script interactively to input all details**:
-   ```sh
-   create-poetry-app
-   ```
+#### Example 2: Specifying Project Name and Python Version
 
-#### Command Line Options
+To create a new project with a specified name and Python version:
 
-| Option | Description |
-|--------|-------------|
-| `-y`   | Use all default values for everything except the project name. |
-| `-p`   | Set the project name. |
-| `-n`   | Set the internal project name. |
-| `-v`   | Set the Python version. |
-| `-u`   | Set the upper Python version limit. |
-| `-d`   | Set the project description. |
-| `-a`   | Set the author name. |
-| `-e`   | Set the author email. |
-| `-c`   | Set the virtual environment configuration (`true` or `false`). |
+```sh
+create-poetry-app -p my_project -v "^3.12"
+```
+
+#### Example 3: Full Customization
+
+To create a new project with full customization:
+
+```sh
+create-poetry-app -p my_project -n my_package -v "^3.12" -u "3.33" -d "My new project" -a "Smith Neo" -e "aifirstd3v@matrix.universe" -c true
+```
+
+### Prompted Input
+
+If any required options are not provided via the command line, the script will prompt for them interactively. For example, running the script without the `-v` option will prompt for the Python version.
 
 #### Example Workflow
 
@@ -116,7 +114,7 @@ Here is an example workflow when running the script with no options:
 
 3. The script will prompt for the Python version (default: `3.12`):
    ```
-   Enter Python version (default: 3.12):
+   Enter Python version (default: ^3.12, e.g., 3.12 or ^3.12 or ~3.12). If you plan to add an upper version limit, enter numbers only:
    ```
    The user inputs:
    ```
@@ -125,7 +123,7 @@ Here is an example workflow when running the script with no options:
 
 4. The script will prompt for the upper Python version limit (default: `3.12`):
    ```
-   Enter upper Python version limit (default: 3.12):
+   Enter upper Python version limit (optional, numbers only, e.g., 3.33):
    ```
    The user inputs:
    ```
