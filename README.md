@@ -227,6 +227,12 @@ By mastering these commands and configuration settings, you can take full advant
 
 
 ---
+## Todo
+
+- [ ] Add support for Poetry 2.0 and maintain backward compatibility
+- [ ] Add more options and input support
+
+---
 
 Take your Python project setup to the next level. Save time, reduce errors, and get started on your next big idea faster than ever before with our Ultimate Poetry Project Setup Script! 🌟
 
