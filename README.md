@@ -35,11 +35,11 @@ Setting up a Python project with specific requirements can be a hassle. Our scri
 1. **Clone or Download the Script**: Get the script from this GitHub repository.
 2. **Make the Script Executable**:
    ```sh
-   chmod +x create_poetry_project
+   chmod +x create-poetry-project
    ```
 3. **Run the Script**:
    ```sh
-   ./create_poetry_project
+   ./create-poetry-project
    ```
 4. **Follow the Prompts**: Enter the required information when prompted.
 5. **Start Coding**: Your new Poetry project is ready to go!
@@ -122,7 +122,7 @@ By following these steps, you'll make `create-poetry-app` easily accessible, str
 ## Example
 
 ```sh
-$ ./create_poetry_project
+$ ./create-poetry-project
 
 Enter project name (default: projectname):
 matrixworld
