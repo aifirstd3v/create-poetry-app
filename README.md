@@ -12,16 +12,39 @@ Are you tired of the cumbersome process of setting up a new Python project with 
 
 ---
 
-## Features:
+## Features
 
-- **Interactive Input Prompts**: Seamlessly enter your project details such as name, author name, email, Python version, and more.
-- **Email Validation**: Ensures you enter a valid email format for a professional touch.
-- **Flexible Configuration**: Customize virtual environment preferences with a simple yes/no prompt.
-- **Automated `pyproject.toml` Generation**: Generates a clean and error-free `pyproject.toml` file tailored to your inputs.
-- **Seamless Virtual Environment Activation**: Automatically configures and activates your virtual environment.
-- **Perfect for All Projects**: Whether you're starting a small script or a large-scale application, our script scales with your needs.
-- **Template Dependencies**: Supports predefined dependencies based on project templates (e.g., `datascience`, `ai`) loaded from `config.toml`.
-- 
+### Project Initialization
+- **Automated Setup**: Automates the creation of new Python projects using Poetry, ensuring a consistent and repeatable project structure.
+- **Default Values**: Provides default values for project name, package name, Python version, virtual environment configuration, description, author name, and email, allowing for quick setup.
+
+### Dependency Management
+- **Template Support**: Supports project templates (e.g., datascience, ai) with predefined dependencies loaded from a `config.toml` file located in the user's home directory.
+- **Dynamic Dependency Versioning**: Automatically sets dependency versions based on user input, ensuring compatibility with specified Python versions.
+
+### Virtual Environment Configuration
+- **In-Project Virtual Environment**: Configures Poetry to create virtual environments within the project directory, facilitating isolated and self-contained environments.
+- **Deactivation of Existing Environments**: Detects and deactivates any currently active virtual environments to prevent conflicts.
+
+### User-Friendly Prompts
+- **Interactive Input**: Prompts the user for project-specific inputs if not provided via command line arguments, ensuring the necessary information is gathered for project setup.
+- **Email Validation**: Ensures that the provided author email is in a valid format.
+
+### Logging and Debugging
+- **Detailed Logging**: Provides detailed logging for debugging purposes, including information about the user's shell, virtual environment status, and command outputs.
+- **Environment Variable Management**: Manages environment variables related to virtual environments and Conda environments, ensuring they are correctly set and unset as needed.
+
+### Visual Feedback
+- **ANSI Escape Sequences**: Uses ANSI escape sequences to provide visually distinct and colorful console output, making it easy to identify important information and next steps.
+
+### Comprehensive Setup
+- **Automatic Dependency Installation**: Installs project dependencies using Poetry, ensuring the environment is ready for development.
+- **Shell Script Generation**: Generates and executes a shell script to activate the virtual environment, providing clear instructions for manual activation if needed.
+
+### Miscellaneous
+- **Configurable Shell**: Detects and uses the user's preferred shell for executing commands, ensuring compatibility across different environments.
+- **Clean Up and Overwrite**: Handles existing directories gracefully by prompting the user for confirmation before overwriting, ensuring no accidental data loss.
+
 ---
 
 ## Why Choose Our Script?
