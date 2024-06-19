@@ -20,7 +20,8 @@ Are you tired of the cumbersome process of setting up a new Python project with 
 - **Automated `pyproject.toml` Generation**: Generates a clean and error-free `pyproject.toml` file tailored to your inputs.
 - **Seamless Virtual Environment Activation**: Automatically configures and activates your virtual environment.
 - **Perfect for All Projects**: Whether you're starting a small script or a large-scale application, our script scales with your needs.
-
+- **Template Dependencies**: Supports predefined dependencies based on project templates (e.g., `datascience`, `ai`) loaded from `config.toml`.
+- 
 ---
 
 ## Why Choose Our Script?
@@ -97,6 +98,8 @@ The script accepts the following command-line options:
 - `-a` : Set the author name.
 - `-e` : Set the author email.
 - `-c` : Set the virtual environment configuration (`true` or `false`).
+- `-t` : Set the template name.
+- `-h` : Display this help message.
 
 ### Examples
 
@@ -128,88 +131,78 @@ create-poetry-app -p my_project -n my_package -v "^3.12" -u "3.33" -d "My new pr
 
 If any required options are not provided via the command line, the script will prompt for them interactively. For example, running the script without the `-v` option will prompt for the Python version.
 
-#### Example Workflow
+---
 
-Here is an example workflow when running the script with no options:
 
-1. The script will prompt for the project name:
-   ```
-   Enter project name:
-   ```
-   The user inputs:
-   ```
-   matrixworld
-   ```
+## Project Templates(Optional): New feature in 1.0.0 🚀
 
-2. The script will prompt for the internal project name (default: `main`):
-   ```
-   Enter your package name (default: main):
-   ```
-   The user inputs:
-   ```
-   singularity
-   ```
+The `create_poetry_app.py` script supports project templates that allow you to predefine dependencies based on the type of project you are creating. This makes it easier to set up projects with common configurations and dependencies.
 
-3. The script will prompt for the Python version (default: `3.12`):
-   ```
-   Enter Python version (default: ^3.12, e.g., 3.12 or ^3.12 or ~3.12). If you plan to add an upper version limit, enter numbers only:
-   ```
-   The user inputs:
-   ```
-   3.11
-   ```
+### Using Templates
 
-4. The script will prompt for the upper Python version limit (default: `3.12`):
-   ```
-   Enter upper Python version limit (optional, numbers only, e.g., 3.33):
-   ```
-   The user inputs:
-   ```
-   3.13
-   ```
+You can specify a project template using the `-t` or `--template` option when running the script. For example:
 
-5. The script will prompt for the project description (default: `""`):
-   ```
-   Enter project description (default: ):
-   ```
-   The user inputs:
-   ```
-   My Project Matrix Multiverse
-   ```
+```sh
+python create_poetry_app.py -p my_project -t datascience
+```
 
-6. The script will prompt for the author name (default: `Your Name`):
-   ```
-   Enter author name (default: Your Name):
-   ```
-   The user inputs:
-   ```
-   Smith Neo
-   ```
+If you do not specify a template via the command line, the script will prompt you to enter one during execution.
 
-7. The script will prompt for the author email (default: `you@example.com`):
-   ```
-   Enter author email (default: you@example.com):
-   ```
-   The user inputs:
-   ```
-   aifirstd3v@matrix.universe
+### Configuring Templates with config.toml
+
+The templates and their corresponding dependencies are defined in a `config.toml` file. This file should be placed in the same directory as `create_poetry_app.py`.
+
+Here is an example of what your `config.toml` might look like:
+
+```toml
+[template.dependency.datascience]
+pandas = "^2.2.2"
+numpy = ">=1.26.0,<2.0.0"
+
+[template.dependency.ai]
+pandas = "^2.2.2"
+numpy = ">=1.26.0,<3.0.0"
+tensorflow = "^2.4.1"
+```
+
+In this example, two templates are defined: `datascience` and `ai`. Each template specifies the dependencies that should be included in the `pyproject.toml` file for projects using that template.
+
+### Adding New Templates
+
+To add a new template, simply edit the `config.toml` file and add a new section under `[template.dependency]` with the name of your template. For example:
+
+```toml
+[template.dependency.web]
+flask = "^2.0.0"
+requests = "^2.25.1"
+```
+
+Now you can use the `web` template when creating a new project:
+
+```sh
+python create_poetry_app.py -p my_web_project -t web
+```
+
+### Example
+
+Here is a full example of using a template to create a new project:
+
+1. Ensure your `config.toml` includes the desired template:
+   ```toml
+   [template.dependency.datascience]
+   pandas = "^2.2.2"
+   numpy = ">=1.26.0,<2.0.0"
    ```
 
-8. The script will prompt for the virtual environment configuration (default: `true`):
-   ```
-   Set virtualenvs.in-project to true/false (default: true):
-   ```
-   The user inputs:
-   ```
-   true
+2. Run the script with the `-t` option:
+   ```sh
+   python create_poetry_app.py -p my_datascience_project -t datascience
    ```
 
-9. The script will then create the project with the specified details, set up the virtual environment, and activate it:
-   ```
-   Project 'myproject' created and virtual environment activated with Python 3.11
-   ```
+The script will automatically include the dependencies specified in the `datascience` template in the `pyproject.toml` file of the new project.
+This feature allows you to quickly and consistently set up projects with common dependencies, saving time and reducing errors.
 
-This workflow demonstrates the interactive mode where the user is prompted for each piece of information if not provided via command line options.
+
 
 ---
 ## Adding create-poetry-app to Your Shell Configuration(Optional)
