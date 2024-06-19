@@ -37,14 +37,8 @@ clone_repo() {
 # Function to create a symbolic link
 create_symlink() {
   echo "Setting up create-poetry-app..."
-  sudo ln -sf "$INSTALL_DIR/create-poetry-app.sh" /usr/local/bin/create-poetry-app
-}
-
-# Function to create a symbolic link for the Python version
-create_symlink_python() {
-  echo "Setting up create-poetry-app (Python version)..."
-  sudo ln -sf "$INSTALL_DIR/create_poetry_app.py" /usr/local/bin/create-poetry-app-python
-  sudo chmod +x "$INSTALL_DIR/create_poetry_app.py"
+  sudo ln -sf "$INSTALL_DIR/$1" /usr/local/bin/create-poetry-app
+  sudo chmod +x "$INSTALL_DIR/$1"
 }
 
 # Function to add create-poetry-app to the PATH in the shell configuration file
@@ -120,9 +114,9 @@ main() {
 
   # Create a symbolic link to make create-poetry-app globally accessible
   if [ "$INSTALL_TYPE" = "shell" ]; then
-    create_symlink
+    create_symlink "create-poetry-app"
   elif [ "$INSTALL_TYPE" = "python" ]; then
-    create_symlink_python
+    create_symlink "create_poetry_app.py"
   fi
 
   # Add create-poetry-app to the PATH in the shell configuration file if needed
