@@ -95,6 +95,24 @@ prompt_installation_type() {
   esac
 }
 
+# Function to check if the installation directory exists and prompt for action
+check_existing_installation() {
+  if [ -d "$INSTALL_DIR" ]; then
+    echo "The installation directory $INSTALL_DIR already exists."
+    read -p "Do you want to remove the existing directory and reinstall? [y/N] " response
+    case $response in
+      [yY][eE][sS]|[yY])
+        echo "Removing existing directory..."
+        rm -rf "$INSTALL_DIR"
+        ;;
+      *)
+        echo "Installation aborted."
+        exit 1
+        ;;
+    esac
+  fi
+}
+
 # Main function to install create-poetry-app
 main() {
   # Display information
@@ -109,12 +127,15 @@ main() {
   # Set the installation directory
   INSTALL_DIR="$HOME/.create-poetry-app"
 
+  # Check for existing installation
+  check_existing_installation
+
   # Clone the repository
   clone_repo
 
   # Create a symbolic link to make create-poetry-app globally accessible
   if [ "$INSTALL_TYPE" = "shell" ]; then
-    create_symlink "create_poetry_app.sh"
+    create_symlink "create-poetry-app.sh"
   elif [ "$INSTALL_TYPE" = "python" ]; then
     create_symlink "create_poetry_app.py"
   fi
