@@ -1,12 +1,7 @@
-# env command to find sh in the user's PATH, making it more portable across different Unix-like systems.
 #!/usr/bin/env sh
 
-# makes the script exit immediately if any command returns a non-zero exit status. This is useful for:
-# Preventing the script from continuing when an error occurs.
-# Ensuring that any error is caught and handled appropriately.
+# Makes the script exit immediately if any command returns a non-zero exit status.
 set -e
-
-
 
 # Function to display information about the script
 display_info() {
@@ -33,24 +28,30 @@ fmt_error() {
 confirm_uninstallation() {
   read -r -p "Are you sure you want to remove create-poetry-app? [y/N] " confirmation
   if [ "$confirmation" != y ] && [ "$confirmation" != Y ]; then
-    echo "Uninstall cancelled"
+    echo "Uninstall cancelled."
     exit
   fi
 }
 
 # Function to remove installation directory
 remove_installation_directory() {
-  echo "Removing ~/.create-poetry-app"
   if [ -d "$HOME/.create-poetry-app" ]; then
+    echo "Removing $HOME/.create-poetry-app..."
     rm -rf "$HOME/.create-poetry-app"
+    echo "Installation directory removed."
+  else
+    echo "$HOME/.create-poetry-app does not exist. Skipping."
   fi
 }
 
 # Function to remove symbolic link
 remove_symbolic_link() {
   if [ -L /usr/local/bin/create-poetry-app ]; then
-    echo "Removing /usr/local/bin/create-poetry-app"
+    echo "Removing /usr/local/bin/create-poetry-app..."
     sudo rm -f /usr/local/bin/create-poetry-app
+    echo "Symbolic link removed."
+  else
+    echo "/usr/local/bin/create-poetry-app does not exist. Skipping."
   fi
 }
 
@@ -73,9 +74,20 @@ determine_shell_config() {
 
 # Function to remove the create-poetry-app PATH modification from the shell configuration file
 remove_path_modification() {
-  echo "Removing create-poetry-app from your PATH in $SHELL_CONFIG..."
-  sed -i.bak '/export PATH="\$HOME\/.create-poetry-app:\$PATH"/d' "$SHELL_CONFIG"
-  source "$SHELL_CONFIG"
+  if [ -f "$SHELL_CONFIG" ]; then
+    echo "Removing create-poetry-app from your PATH in $SHELL_CONFIG..."
+    sed -i.bak "\|export PATH=\"$HOME/.create-poetry-app:\$PATH\"|d" "$SHELL_CONFIG"
+    echo "PATH modification removed."
+    echo "A backup of your original shell configuration file has been created: $SHELL_CONFIG.bak"
+    # Reload shell configuration
+    if [ -n "$BASH_SOURCE" ]; then
+      source "$SHELL_CONFIG"
+    else
+      . "$SHELL_CONFIG"
+    fi
+  else
+    fmt_error "$SHELL_CONFIG not found. Please manually remove the create-poetry-app path from your PATH."
+  fi
 }
 
 # Main function to uninstall create-poetry-app

@@ -53,18 +53,28 @@ add_to_path() {
       SHELL_CONFIG="$HOME/.zshrc"
       ;;
     *)
-      fmt_error "Unsupported shell: $SHELL_NAME. Please add /usr/local/bin to your PATH manually."
+      fmt_error "Unsupported shell: $SHELL_NAME. Please add $INSTALL_DIR and /usr/local/bin to your PATH manually."
       exit 1
       ;;
   esac
 
-  if ! grep -q 'create-poetry-app' "$SHELL_CONFIG"; then
-    echo "Adding create-poetry-app to your PATH in $SHELL_CONFIG..."
-    echo 'export PATH="/usr/local/bin:$PATH"' >> "$SHELL_CONFIG"
-    source "$SHELL_CONFIG"
+  # Add INSTALL_DIR to PATH if not already present
+  if ! grep -q "$INSTALL_DIR" "$SHELL_CONFIG"; then
+    echo "Adding $INSTALL_DIR to your PATH in $SHELL_CONFIG..."
+    echo "export PATH=\"$INSTALL_DIR:\$PATH\"" >> "$SHELL_CONFIG"
   else
-    echo "create-poetry-app is already in your PATH."
+    echo "$INSTALL_DIR is already in your PATH."
   fi
+
+  # Add /usr/local/bin to PATH if not already present
+  if ! grep -q '/usr/local/bin' "$SHELL_CONFIG"; then
+    echo "Adding /usr/local/bin to your PATH in $SHELL_CONFIG..."
+    echo 'export PATH="/usr/local/bin:$PATH"' >> "$SHELL_CONFIG"
+  else
+    echo "/usr/local/bin is already in your PATH."
+  fi
+
+  source "$SHELL_CONFIG"
 }
 
 # Function to check and install necessary dependencies
@@ -138,7 +148,6 @@ install_python_dependencies() {
     pip3 install -r "$INSTALL_DIR/requirements.txt"
   fi
 }
-
 
 # Main function to install create-poetry-app
 main() {
