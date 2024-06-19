@@ -1,13 +1,15 @@
 [tool.poetry]
-name = "singularity"
+name = "matrix"
 version = "0.1.0"
-description = "Project Matrix Multiverse"
-authors = ["aifirstd3v <aifirstd3v@33.universe>"]
+description = "Matrix Multiverse Project"
+authors = ["Smith Neo <admin@matrix.universe8.com>"]
 readme = "README.md"
-packages = [{include = "singularity", from = "src"}]
+packages = [{include = "matrix", from = "src"}]
 
 [tool.poetry.dependencies]
-python = ">=3.8,<3.13"
+python = ">=3.12,<3.33"
+pandas = "^2.2.2"
+numpy = ">=1.26.0,<3.0.0"
 
 [build-system]
 requires = ["poetry-core"]

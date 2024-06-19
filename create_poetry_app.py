@@ -1,5 +1,3 @@
-#!/usr/bin/env python3
-
 import logging
 import os
 import re
@@ -9,8 +7,18 @@ from argparse import ArgumentParser
 import toml
 
 logging.basicConfig(
-    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
 )
+
+
+def get_user_shell():
+    user_shell = os.environ.get("SHELL", "/bin/bash")
+    logging.debug(f"user_shell: {user_shell}")
+
+    return user_shell
+
+
+USER_SHELL = get_user_shell()
 
 
 class ProjectCreator:
@@ -39,6 +47,9 @@ class ProjectCreator:
         self.dependency_version = ""
         self.template = ""
         self.dependencies = {}
+
+        self.new_virtual_env_path = ""
+        self.activate_script = ""
 
     def validate_email(self, email):
         return bool(
@@ -88,7 +99,11 @@ class ProjectCreator:
 
     def load_template_dependencies(self):
         if self.template:
-            config = toml.load("config.toml")
+            config_path = os.path.join(
+                os.path.expanduser("~"), ".create-poetry-app", "config.toml"
+            )
+            print(f"Loading config from: {config_path}")
+            config = toml.load(config_path)
             print(f"config.toml: {config}")
             try:
                 self.dependencies = config["template"]["dependency"][self.template]
@@ -211,19 +226,20 @@ class ProjectCreator:
     def create_project(self):
         if os.path.exists(self.project_name) and os.listdir(self.project_name):
             print(f"Destination {self.project_name} exists and is not empty.")
-            response = input("Do you want to remove the existing directory and continue? [y/N] ")
-            if response.lower() in ['y', 'yes']:
+            response = input(
+                "Do you want to remove the existing directory and continue? [y/N] "
+            )
+            if response.lower() in ["y", "yes"]:
                 subprocess.run(["rm", "-rf", self.project_name], check=True)
                 print(f"Removed existing directory {self.project_name}.")
             else:
                 print("Operation aborted.")
                 exit(1)
-        
+
         subprocess.run(
             ["poetry", "new", self.project_name, "--name", self.my_name, "--src"],
             check=True,
         )
-    
 
     def configure_poetry(self):
         subprocess.run(
@@ -233,39 +249,112 @@ class ProjectCreator:
     def use_python_version(self):
         escaped_python_version = self.sanitize_input(self.python_version)
         print(f"Using Python {escaped_python_version} for poetry env use")
-    
+
+        # Check if a virtual environment is currently active
+        virtual_env = os.environ.get("VIRTUAL_ENV")
+        logging.debug(f"VIRTUAL_ENV: {virtual_env}")
+        if virtual_env:
+            print(f"Deactivating current virtual environment at {virtual_env}")
+            # Deactivating by unsetting VIRTUAL_ENV and other related environment variables
+            os.environ.pop("VIRTUAL_ENV", None)
+            os.environ.pop("PYTHONHOME", None)
+            os.environ.pop("PYTHONPATH", None)
+            # If you are using conda, you might want to deactivate conda environment
+            if "CONDA_DEFAULT_ENV" in os.environ:
+                try:
+                    subprocess.run(
+                        ["conda", "deactivate"],
+                        shell=True,
+                        executable=USER_SHELL,
+                        check=True,
+                    )
+                except subprocess.CalledProcessError:
+                    print("Failed to deactivate the existing conda environment.")
+
         try:
-             # Check if the specified Python version is available in the system PATH
-            result = subprocess.run([f"python{escaped_python_version}", "--version"], capture_output=True, text=True)
+            # Check if the specified Python version is available in the system PATH
+            result = subprocess.run(
+                ["which", f"python{escaped_python_version}"],
+                capture_output=True,
+                text=True,
+            )
             logging.debug(f"Command output: {result.stdout.strip()}")
             logging.debug(f"Command error: {result.stderr.strip()}")
             logging.debug(f"Command return code: {result.returncode}")
-            if result.returncode == 0:
-                print(f"Found Python version: {result.stdout.strip()}")
-                subprocess.run(["poetry", "env", "use", f"python{escaped_python_version}"], check=True)
+
+            if result.returncode == 0 and result.stdout.strip():
+                python_path = result.stdout.strip()
+                print(f"Found Python version at: {python_path}")
+                subprocess.run(
+                    ["poetry", "env", "use", python_path],
+                    check=True,
+                )
+
+                # Get the path to the new virtual environment
+                result = subprocess.run(
+                    ["poetry", "env", "info", "--path"],
+                    capture_output=True,
+                    text=True,
+                    check=True,
+                )
+                self.new_virtual_env_path = result.stdout.strip()
+                print(
+                    f"New virtual environment created at: {self.new_virtual_env_path}"
+                )
+                os.environ["VIRTUAL_ENV"] = self.new_virtual_env_path
+
+                # Manually source the activate script to make sure the shell is aware of the new environment
+                self.activate_script = os.path.join(
+                    self.new_virtual_env_path, "bin", "activate"
+                )
+
                 return
         except subprocess.CalledProcessError:
-            print(f"Python {escaped_python_version} is not available in the system PATH.")
-    
-        print(f"Error: Python {escaped_python_version} is not available. Please install it using your preferred Python version management tool.")
-        exit(1)
-    
-    
-    
-    
+            print(
+                f"Python {escaped_python_version} is not available in the system PATH."
+            )
+
+        print(
+            f"Error: Python {escaped_python_version} is not available. Please install it using your preferred Python version management tool."
+        )
 
     def install_dependencies(self):
         print("Installing dependencies using poetry")
         subprocess.run(["poetry", "install"], check=True)
+
         if self.venv_config.lower() == "true":
-            venv_path = os.path.join(self.project_name, ".venv", "bin", "activate")
-            if os.path.exists(venv_path):
-                print(f"Activating virtual environment: source {venv_path}")
-                subprocess.run(
-                    f"source {venv_path}", shell=True, executable="/bin/bash"
+            venv_path = os.path.abspath(".venv")
+            venv_activate_path = os.path.join(venv_path, "bin", "activate")
+
+            logging.debug(f"venv_path: {venv_path}")
+            logging.debug(f"venv_activate_path: {venv_activate_path}")
+            logging.debug(f"os.path.exists(venv_path): {os.path.exists(venv_path)}")
+            logging.debug(
+                f"os.path.exists(venv_activate_path): {os.path.exists(venv_activate_path)}"
+            )
+
+            if os.path.exists(venv_activate_path):
+                print(f"Virtual environment created at {venv_path}")
+                print("\033[1;32m" + "=" * 50 + "\033[0m")
+                print(
+                    "\033[1;32m"
+                    + "Virtual environment created successfully!"
+                    + "\033[0m"
                 )
+                print("\033[1;32m" + "=" * 50 + "\033[0m")
+                print(
+                    "\033[1;34m"
+                    + "To activate the virtual environment, run:\n"
+                    + "\033[0m"
+                )
+                print("\033[1;33m" + "source .venv/bin/activate" + "\033[0m")
+                print("\033[1;34m" + "or" + "\033[0m")
+                print("\033[1;33m" + f"source {self.activate_script}" + "\033[0m")
+                print("\033[1;32m" + "=" * 50 + "\033[0m")
             else:
-                print(f"Virtual environment activation script not found at {venv_path}")
+                print(
+                    f"Virtual environment activation script not found at {venv_activate_path}"
+                )
 
     def main(self):
         self.parse_options()
@@ -281,7 +370,7 @@ class ProjectCreator:
         self.use_python_version()
         self.install_dependencies()
         print(
-            f"Project '{self.project_name}' created and virtual environment activated with Python {self.python_version}"
+            f"⭐️ Congratulations! Project '{self.project_name}' successfully created 👍"
         )
 
 
