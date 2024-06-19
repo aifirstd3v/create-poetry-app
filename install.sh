@@ -1,10 +1,10 @@
-# env command to find sh in the user's PATH, making it more portable across different Unix-like systems.
 #!/usr/bin/env sh
 
-# makes the script exit immediately if any command returns a non-zero exit status. This is useful for:
+# Makes the script exit immediately if any command returns a non-zero exit status. This is useful for:
 # Preventing the script from continuing when an error occurs.
 # Ensuring that any error is caught and handled appropriately.
 set -e
+
 
 # Function to check if a command exists
 command_exists() {
@@ -16,27 +16,76 @@ fmt_error() {
   printf "\033[31m%s\033[0m\n" "$*" >&2
 }
 
-# Ensure necessary commands are available
-if ! command_exists curl; then
-  fmt_error "curl is not installed. Please install curl first."
-  exit 1
-fi
+# Function to clone the repository
+clone_repo() {
+  echo "Cloning create-poetry-app..."
+  git clone https://github.com/aifirstd3v/create-poetry-app.git "$INSTALL_DIR"
+}
 
-if ! command_exists git; then
-  fmt_error "git is not installed. Please install git first."
-  exit 1
-fi
+# Function to create a symbolic link
+create_symlink() {
+  echo "Setting up create-poetry-app..."
+  sudo ln -sf "$INSTALL_DIR/create-poetry-app.sh" /usr/local/bin/create-poetry-app
+}
 
-# Set the installation directory
-INSTALL_DIR="$HOME/.create-poetry-app"
+# Function to add create-poetry-app to the PATH in the shell configuration file
+add_to_path() {
+  SHELL_NAME=$(basename "$SHELL")
+  case "$SHELL_NAME" in
+    bash)
+      SHELL_CONFIG="$HOME/.bashrc"
+      ;;
+    zsh)
+      SHELL_CONFIG="$HOME/.zshrc"
+      ;;
+    *)
+      fmt_error "Unsupported shell: $SHELL_NAME. Please add /usr/local/bin to your PATH manually."
+      exit 1
+      ;;
+  esac
 
-# Clone the repository
-echo "Cloning create-poetry-app..."
-git clone https://github.com/aifirstd3v/create-poetry-app.git "$INSTALL_DIR"
+  if ! grep -q 'create-poetry-app' "$SHELL_CONFIG"; then
+    echo "Adding create-poetry-app to your PATH in $SHELL_CONFIG..."
+    echo 'export PATH="$HOME/.create-poetry-app:$PATH"' >> "$SHELL_CONFIG"
+    source "$SHELL_CONFIG"
+  else
+    echo "create-poetry-app is already in your PATH."
+  fi
+}
 
-# Create a symbolic link to make create-poetry-app globally accessible
-echo "Setting up create-poetry-app..."
-ln -sf "$INSTALL_DIR/create-poetry-app" /usr/local/bin/create-poetry-app
+# Function to check and install necessary dependencies
+check_dependencies() {
+  if ! command_exists curl; then
+    fmt_error "curl is not installed. Please install curl first."
+    exit 1
+  fi
 
-# Confirm installation
-echo "create-poetry-app installed successfully!"
+  if ! command_exists git; then
+    fmt_error "git is not installed. Please install git first."
+    exit 1
+  fi
+}
+
+# Main function to install create-poetry-app
+main() {
+  # Ensure necessary commands are available
+  check_dependencies
+
+  # Set the installation directory
+  INSTALL_DIR="$HOME/.create-poetry-app"
+
+  # Clone the repository
+  clone_repo
+
+  # Create a symbolic link to make create-poetry-app globally accessible
+  create_symlink
+
+  # Add create-poetry-app to the PATH in the shell configuration file if needed
+  add_to_path
+
+  # Confirm installation
+  echo "create-poetry-app installed successfully!"
+}
+
+# Run the main function
+main
