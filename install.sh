@@ -1,8 +1,5 @@
 #!/usr/bin/env sh
 
-# Makes the script exit immediately if any command returns a non-zero exit status. This is useful for:
-# Preventing the script from continuing when an error occurs.
-# Ensuring that any error is caught and handled appropriately.
 set -e
 
 # Function to display information about the script
@@ -43,6 +40,13 @@ create_symlink() {
   sudo ln -sf "$INSTALL_DIR/create-poetry-app.sh" /usr/local/bin/create-poetry-app
 }
 
+# Function to create a symbolic link for the Python version
+create_symlink_python() {
+  echo "Setting up create-poetry-app (Python version)..."
+  sudo ln -sf "$INSTALL_DIR/create_poetry_app.py" /usr/local/bin/create-poetry-app-python
+  sudo chmod +x "$INSTALL_DIR/create_poetry_app.py"
+}
+
 # Function to add create-poetry-app to the PATH in the shell configuration file
 add_to_path() {
   SHELL_NAME=$(basename "$SHELL")
@@ -61,7 +65,7 @@ add_to_path() {
 
   if ! grep -q 'create-poetry-app' "$SHELL_CONFIG"; then
     echo "Adding create-poetry-app to your PATH in $SHELL_CONFIG..."
-    echo 'export PATH="$HOME/.create-poetry-app:$PATH"' >> "$SHELL_CONFIG"
+    echo 'export PATH="/usr/local/bin:$PATH"' >> "$SHELL_CONFIG"
     source "$SHELL_CONFIG"
   else
     echo "create-poetry-app is already in your PATH."
@@ -81,10 +85,29 @@ check_dependencies() {
   fi
 }
 
+# Function to prompt user for installation type
+prompt_installation_type() {
+  echo "Which version of create-poetry-app would you like to install?"
+  echo "1. Shell version"
+  echo "2. Python version"
+  read -p "Enter your choice (1 or 2): " choice
+  case $choice in
+    1) INSTALL_TYPE="shell" ;;
+    2) INSTALL_TYPE="python" ;;
+    *)
+      fmt_error "Invalid choice. Please enter 1 or 2."
+      exit 1
+      ;;
+  esac
+}
+
 # Main function to install create-poetry-app
 main() {
   # Display information
   display_info
+
+  # Prompt for installation type
+  prompt_installation_type
 
   # Ensure necessary commands are available
   check_dependencies
@@ -96,7 +119,11 @@ main() {
   clone_repo
 
   # Create a symbolic link to make create-poetry-app globally accessible
-  create_symlink
+  if [ "$INSTALL_TYPE" = "shell" ]; then
+    create_symlink
+  elif [ "$INSTALL_TYPE" = "python" ]; then
+    create_symlink_python
+  fi
 
   # Add create-poetry-app to the PATH in the shell configuration file if needed
   add_to_path
