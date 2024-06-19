@@ -8,6 +8,8 @@ Are you tired of the cumbersome process of setting up a new Python project with 
 
 `The issue this project is trying to address was kind of resolved in the lastest version of Poetry, so I believe it will be helpful to users who are still using current version 1.x. The ultimate goal of this project is to upgrade it into a project creation tool with advanced and diverse features, similar to tools like create-react-app and create-next-app, which even the latest version of Poetry does not provide.`
 
+**We have developed both shell script and Python versions, but since advanced features will continue to be added only to the Python version, we recommend using the Python version for installation.**
+
 ---
 
 ## Features:
