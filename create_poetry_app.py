@@ -1,11 +1,16 @@
 #!/usr/bin/env python3
 
+import logging
 import os
 import re
 import subprocess
 from argparse import ArgumentParser
 
 import toml
+
+logging.basicConfig(
+    level=logging.DEBUG, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 
 
 class ProjectCreator:
@@ -84,9 +89,10 @@ class ProjectCreator:
     def load_template_dependencies(self):
         if self.template:
             config = toml.load("config.toml")
-            if f"template.dependency.{self.template}" in config:
-                self.dependencies = config[f"template.dependency.{self.template}"]
-            else:
+            print(f"config.toml: {config}")
+            try:
+                self.dependencies = config["template"]["dependency"][self.template]
+            except KeyError:
                 raise ValueError(f"Template '{self.template}' not found in config.toml")
 
     def prompt_for_inputs(self):
@@ -95,6 +101,12 @@ class ProjectCreator:
                 input(f"Enter project name (default: {self.DEFAULT_PROJECT_NAME}): ")
                 or self.DEFAULT_PROJECT_NAME
             )
+
+        if not self.template:
+            self.template = input(
+                "Enter project template (optional, e.g., datascience, ai): "
+            )
+            self.load_template_dependencies()
 
         if not self.use_defaults:
             if not self.my_name:
@@ -154,11 +166,6 @@ class ProjectCreator:
                     or self.DEFAULT_VENV_CONFIG
                 )
 
-            if not self.template:
-                self.template = input(
-                    "Enter project template (optional, e.g., datascience, ai): "
-                )
-                self.load_template_dependencies()
         else:
             self.my_name = self.DEFAULT_MY_NAME
             self.python_version = self.DEFAULT_PYTHON_VERSION
@@ -202,10 +209,21 @@ class ProjectCreator:
             )
 
     def create_project(self):
+        if os.path.exists(self.project_name) and os.listdir(self.project_name):
+            print(f"Destination {self.project_name} exists and is not empty.")
+            response = input("Do you want to remove the existing directory and continue? [y/N] ")
+            if response.lower() in ['y', 'yes']:
+                subprocess.run(["rm", "-rf", self.project_name], check=True)
+                print(f"Removed existing directory {self.project_name}.")
+            else:
+                print("Operation aborted.")
+                exit(1)
+        
         subprocess.run(
             ["poetry", "new", self.project_name, "--name", self.my_name, "--src"],
             check=True,
         )
+    
 
     def configure_poetry(self):
         subprocess.run(
@@ -215,10 +233,39 @@ class ProjectCreator:
     def use_python_version(self):
         escaped_python_version = self.sanitize_input(self.python_version)
         print(f"Using Python {escaped_python_version} for poetry env use")
-        subprocess.run(["poetry", "env", "use", escaped_python_version], check=True)
+    
+        try:
+             # Check if the specified Python version is available in the system PATH
+            result = subprocess.run([f"python{escaped_python_version}", "--version"], capture_output=True, text=True)
+            logging.debug(f"Command output: {result.stdout.strip()}")
+            logging.debug(f"Command error: {result.stderr.strip()}")
+            logging.debug(f"Command return code: {result.returncode}")
+            if result.returncode == 0:
+                print(f"Found Python version: {result.stdout.strip()}")
+                subprocess.run(["poetry", "env", "use", f"python{escaped_python_version}"], check=True)
+                return
+        except subprocess.CalledProcessError:
+            print(f"Python {escaped_python_version} is not available in the system PATH.")
+    
+        print(f"Error: Python {escaped_python_version} is not available. Please install it using your preferred Python version management tool.")
+        exit(1)
+    
+    
+    
+    
 
     def install_dependencies(self):
+        print("Installing dependencies using poetry")
         subprocess.run(["poetry", "install"], check=True)
+        if self.venv_config.lower() == "true":
+            venv_path = os.path.join(self.project_name, ".venv", "bin", "activate")
+            if os.path.exists(venv_path):
+                print(f"Activating virtual environment: source {venv_path}")
+                subprocess.run(
+                    f"source {venv_path}", shell=True, executable="/bin/bash"
+                )
+            else:
+                print(f"Virtual environment activation script not found at {venv_path}")
 
     def main(self):
         self.parse_options()
