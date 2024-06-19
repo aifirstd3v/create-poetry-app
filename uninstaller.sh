@@ -6,6 +6,24 @@
 # Ensuring that any error is caught and handled appropriately.
 set -e
 
+
+
+# Function to display information about the script
+display_info() {
+  echo "⚠️  Welcome to the create-poetry-app Uninstaller!"
+  echo
+  echo "This script will guide you through the uninstallation process of create-poetry-app."
+  echo "Here's what will happen:"
+  echo
+  echo "1. ❓ Confirming if you want to uninstall create-poetry-app."
+  echo "2. 🗑️  Removing the create-poetry-app installation directory."
+  echo "3. 🔗  Removing the symbolic link."
+  echo "4. 🔧  Removing create-poetry-app from your PATH in your shell configuration file."
+  echo
+  echo "Let's proceed with the uninstallation. ⚠️"
+  echo
+}
+
 # Function to display error messages
 fmt_error() {
   printf "\033[31m%s\033[0m\n" "$*" >&2
@@ -62,6 +80,9 @@ remove_path_modification() {
 
 # Main function to uninstall create-poetry-app
 main() {
+  # Display information
+  display_info
+
   # Confirm uninstallation
   confirm_uninstallation
 
@@ -78,8 +99,8 @@ main() {
   remove_path_modification
 
   # Confirm uninstallation
-  echo "Thanks for trying out create-poetry-app. It's been uninstalled."
-  echo "Don't forget to restart your terminal!"
+  echo "Thanks for trying out create-poetry-app. It's been uninstalled. 🚮"
+  echo "Don't forget to restart your terminal! 🖥️"
 }
 
 # Run the main function

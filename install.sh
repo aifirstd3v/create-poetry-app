@@ -6,6 +6,22 @@
 set -e
 
 
+# Function to display information about the script
+display_info() {
+  echo "🚀 Welcome to the create-poetry-app Installer!"
+  echo
+  echo "This script will guide you through the installation process of create-poetry-app."
+  echo "Here's what will happen:"
+  echo
+  echo "1. 🛠️  Checking for required dependencies (curl and git)."
+  echo "2. 📥  Cloning the create-poetry-app repository to your home directory."
+  echo "3. 🔗  Creating a symbolic link to make create-poetry-app accessible from anywhere."
+  echo "4. 🔧  Adding create-poetry-app to your PATH in your shell configuration file."
+  echo
+  echo "Let's get started! 🚀"
+  echo
+}
+
 # Function to check if a command exists
 command_exists() {
   command -v "$@" >/dev/null 2>&1
@@ -68,6 +84,9 @@ check_dependencies() {
 
 # Main function to install create-poetry-app
 main() {
+  # Display information
+  display_info
+
   # Ensure necessary commands are available
   check_dependencies
 
@@ -84,7 +103,7 @@ main() {
   add_to_path
 
   # Confirm installation
-  echo "create-poetry-app installed successfully!"
+  echo "create-poetry-app installed successfully! 🎉"
 }
 
 # Run the main function
