@@ -114,7 +114,7 @@ main() {
 
   # Create a symbolic link to make create-poetry-app globally accessible
   if [ "$INSTALL_TYPE" = "shell" ]; then
-    create_symlink "create-poetry-app"
+    create_symlink "create_poetry_app.sh"
   elif [ "$INSTALL_TYPE" = "python" ]; then
     create_symlink "create_poetry_app.py"
   fi
