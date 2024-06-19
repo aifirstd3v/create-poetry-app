@@ -40,6 +40,7 @@ Before installing `create-poetry-app`, ensure you have the following dependencie
   ```sh
   zsh --version
   ```
+- **Python**: Ensure Python (version 3.6 or higher) is installed. You can check your Python version with `python3 --version`.
 - **curl** or **wget**: These tools are used to download the installation script.
   - To check if `curl` is installed, run:
     ```sh
