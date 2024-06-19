@@ -5,7 +5,6 @@
 # Ensuring that any error is caught and handled appropriately.
 set -e
 
-
 # Function to display information about the script
 display_info() {
   echo "🚀 Welcome to the create-poetry-app Installer!"

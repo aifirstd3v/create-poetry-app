@@ -1,5 +1,7 @@
 #!/usr/bin/env sh
 
+set -e
+
 # This script automates the process of creating a new Python project using Poetry.
 # It allows the user to specify the project name, author name, author email, Python version,
 # the upper limit of the Python version, and whether to create the virtual environment
