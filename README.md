@@ -225,12 +225,10 @@ Here is an example workflow when running the script with no options:
 
 This workflow demonstrates the interactive mode where the user is prompted for each piece of information if not provided via command line options.
 
-
 ---
+## Adding create-poetry-app to Your Shell Configuration(Optional)
 
-## Adding create-poetry-app to Your Shell Configuration
-
-To make the `create-poetry-app` script easily accessible from anywhere in your terminal, you can add it to your shell configuration file. This will allow you to run the script from any directory without needing to specify the full path.
+If `create-poetry-app` was not installed via `install.sh`, you can manually set it up to make the script easily accessible from anywhere in your terminal. This will allow you to run the script from any directory without needing to specify the full path.
 
 #### For macOS and Linux Users:
 
@@ -247,7 +245,7 @@ To make the `create-poetry-app` script easily accessible from anywhere in your t
 
    If you prefer to use a different directory, replace `/usr/local/bin/` with your preferred directory.
 
-2. **Add to Shell Configuration File**:
+2. **Add to Shell Configuration File Manually (Optional)**:
 
    Depending on your shell, you need to add the directory to your PATH in your shell configuration file. The common files are:
 
@@ -298,6 +296,29 @@ To make the `create-poetry-app` script easily accessible from anywhere in your t
 
 By following these steps, you'll make `create-poetry-app` easily accessible, streamlining your workflow and allowing you to set up new Poetry projects quickly and efficiently from anywhere in your terminal.
 
+## Uninstallation
+
+To uninstall `create-poetry-app`, you can use the `uninstaller.sh` script. Follow these steps:
+
+1. **Download the Uninstaller Script**:
+
+   ```sh
+   curl -O https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh
+   ```
+
+2. **Make the Script Executable**:
+
+   ```sh
+   chmod +x uninstaller.sh
+   ```
+
+3. **Run the Uninstaller Script**:
+
+   ```sh
+   ./uninstaller.sh
+   ```
+
+This will remove the `create-poetry-app` installation and any configurations added during the setup.
 
 ---
 
