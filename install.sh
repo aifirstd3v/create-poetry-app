@@ -9,10 +9,11 @@ display_info() {
   echo "This script will guide you through the installation process of create-poetry-app."
   echo "Here's what will happen:"
   echo
-  echo "1. 🛠️  Checking for required dependencies (curl and git)."
+  echo "1. 🛠️  Checking for required dependencies (curl, git, and Python)."
   echo "2. 📥  Cloning the create-poetry-app repository to your home directory."
   echo "3. 🔗  Creating a symbolic link to make create-poetry-app accessible from anywhere."
   echo "4. 🔧  Adding create-poetry-app to your PATH in your shell configuration file."
+  echo "5. 📦  Installing necessary Python packages if Python version is selected."
   echo
   echo "Let's get started! 🚀"
   echo
@@ -77,6 +78,17 @@ check_dependencies() {
     fmt_error "git is not installed. Please install git first."
     exit 1
   fi
+
+  if [ "$INSTALL_TYPE" = "python" ]; then
+    if ! command_exists python3; then
+      fmt_error "Python is not installed. Please install Python first."
+      exit 1
+    fi
+    if ! command_exists pip3; then
+      fmt_error "pip is not installed. Please install pip first."
+      exit 1
+    fi
+  fi
 }
 
 # Function to prompt user for installation type
@@ -113,6 +125,21 @@ check_existing_installation() {
   fi
 }
 
+# Function to install Python dependencies if the Python version is selected
+install_python_dependencies() {
+  if [ "$INSTALL_TYPE" = "python" ]; then
+    echo "Installing Python dependencies..."
+
+    # Log the packages to be installed
+    echo "The following packages will be installed:"
+    cat "$INSTALL_DIR/requirements.txt"
+
+    # Install the packages
+    pip3 install -r "$INSTALL_DIR/requirements.txt"
+  fi
+}
+
+
 # Main function to install create-poetry-app
 main() {
   # Display information
@@ -142,6 +169,9 @@ main() {
 
   # Add create-poetry-app to the PATH in the shell configuration file if needed
   add_to_path
+
+  # Install Python dependencies if needed
+  install_python_dependencies
 
   # Confirm installation
   echo "create-poetry-app installed successfully! 🎉"

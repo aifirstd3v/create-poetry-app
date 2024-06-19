@@ -5,54 +5,12 @@ import re
 import subprocess
 from argparse import ArgumentParser
 
+import toml
+
 
 class ProjectCreator:
     """
     ProjectCreator is a utility class that automates the creation of new Python projects using Poetry.
-
-    This class provides functionality to:
-    - Parse command line options to set project configuration.
-    - Prompt the user for input values if not provided via command line options.
-    - Validate and sanitize user inputs.
-    - Create a new Poetry project directory structure.
-    - Generate a pyproject.toml file with specified project details.
-    - Configure Poetry to create virtual environments inside the project directory.
-    - Install project dependencies and set up the virtual environment.
-
-    Attributes:
-        DEFAULT_PROJECT_NAME (str): Default name for the project.
-        DEFAULT_MY_NAME (str): Default name for the main package.
-        DEFAULT_PYTHON_VERSION (str): Default Python version for the project.
-        DEFAULT_VENV_CONFIG (str): Default setting for creating virtual environments inside the project.
-        DEFAULT_DESCRIPTION (str): Default description for the project.
-        DEFAULT_AUTHOR_NAME (str): Default author name for the project.
-        DEFAULT_AUTHOR_EMAIL (str): Default author email for the project.
-
-        project_name (str): Name of the project.
-        my_name (str): Name of the main package.
-        python_version (str): Python version for the project.
-        upper_python_version (str): Upper limit for the Python version.
-        venv_config (str): Setting for creating virtual environments inside the project.
-        description (str): Description for the project.
-        author_name (str): Author name for the project.
-        author_email (str): Author email for the project.
-        use_defaults (bool): Flag indicating whether to use default values.
-        dependency_version (str): Formatted string for specifying the Python version dependency.
-
-    Methods:
-        validate_email(email): Validates the format of the given email address.
-        clean_upper_version(version): Cleans and validates the upper Python version format.
-        convert_package_name(name): Converts a package name to a valid format.
-        sanitize_input(input_value): Sanitizes input before writing to pyproject.toml.
-        parse_options(): Parses command line options.
-        prompt_for_inputs(): Prompts for input values if not provided via command line options or use default values.
-        set_dependency_version(): Sets the dependency version based on PYTHON_VERSION and UPPER_PYTHON_VERSION.
-        create_pyproject_toml(): Creates the pyproject.toml file with the specified values.
-        create_project(): Creates a new Poetry project directory structure.
-        configure_poetry(): Configures Poetry to create virtual environments inside the project directory.
-        use_python_version(): Uses the specified Python version for the project's virtual environment.
-        install_dependencies(): Installs the project dependencies using Poetry.
-        main(): Main function that orchestrates the creation and setup of the new project.
     """
 
     def __init__(self):
@@ -74,6 +32,8 @@ class ProjectCreator:
         self.author_email = ""
         self.use_defaults = False
         self.dependency_version = ""
+        self.template = ""
+        self.dependencies = {}
 
     def validate_email(self, email):
         return bool(
@@ -108,6 +68,7 @@ class ProjectCreator:
         parser.add_argument("-a", type=str, help="Author name")
         parser.add_argument("-e", type=str, help="Author email")
         parser.add_argument("-c", type=str, help="Virtualenv configuration")
+        parser.add_argument("-t", type=str, help="Project template")
         args = parser.parse_args()
         self.use_defaults = args.y
         self.project_name = args.p
@@ -118,6 +79,15 @@ class ProjectCreator:
         self.author_name = args.a
         self.author_email = args.e
         self.venv_config = args.c
+        self.template = args.t
+
+    def load_template_dependencies(self):
+        if self.template:
+            config = toml.load("config.toml")
+            if f"template.dependency.{self.template}" in config:
+                self.dependencies = config[f"template.dependency.{self.template}"]
+            else:
+                raise ValueError(f"Template '{self.template}' not found in config.toml")
 
     def prompt_for_inputs(self):
         if not self.project_name:
@@ -183,6 +153,12 @@ class ProjectCreator:
                     )
                     or self.DEFAULT_VENV_CONFIG
                 )
+
+            if not self.template:
+                self.template = input(
+                    "Enter project template (optional, e.g., datascience, ai): "
+                )
+                self.load_template_dependencies()
         else:
             self.my_name = self.DEFAULT_MY_NAME
             self.python_version = self.DEFAULT_PYTHON_VERSION
@@ -190,6 +166,8 @@ class ProjectCreator:
             self.author_name = self.DEFAULT_AUTHOR_NAME
             self.author_email = self.DEFAULT_AUTHOR_EMAIL
             self.venv_config = self.DEFAULT_VENV_CONFIG
+            self.template = ""
+            self.dependencies = {}
 
     def set_dependency_version(self):
         if self.upper_python_version:
@@ -212,10 +190,15 @@ class ProjectCreator:
                 f'readme = "README.md"\n'
                 f'packages = [{{include = "{self.my_name}", from = "src"}}]\n\n'
                 f"[tool.poetry.dependencies]\n"
-                f'python = "{self.dependency_version}"\n\n'
-                f"[build-system]\n"
-                f'requires = ["poetry-core"]\n'
-                f'build-backend = "poetry.core.masonry.api"\n'
+                f'python = "{self.dependency_version}"\n'
+            )
+            for package, version in self.dependencies.items():
+                f.write(f'{package} = "{version}"\n')
+
+            f.write(
+                "\n[build-system]\n"
+                'requires = ["poetry-core"]\n'
+                'build-backend = "poetry.core.masonry.api"\n'
             )
 
     def create_project(self):

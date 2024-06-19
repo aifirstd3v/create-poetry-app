@@ -1,0 +1,7 @@
+[template.dependency.datascience]
+pandas = "^2.2.2"
+numpy = ">=1.26.0,<2.0.0"
+
+[template.dependency.ai]
+pandas = "^2.2.2"
+numpy = ">=1.26.0,<3.0.0"
