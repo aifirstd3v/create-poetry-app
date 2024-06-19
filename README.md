@@ -325,25 +325,24 @@ If `create-poetry-app` is already installed in the `$HOME/.create-poetry-app` di
 
 OR
 
-1. **Download the Uninstaller Script**:
 
-   If you don't already have the `uninstaller.sh` script, download it from the repository:
+#### Using curl
 
-   ```sh
-   curl -O https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh
-   ```
+```sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh)"
+```
 
-2. **Make the Script Executable**:
+#### Using wget
 
-   ```sh
-   chmod +x uninstaller.sh
-   ```
+```sh
+sh -c "$(wget -O- https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh)"
+```
 
-3. **Run the Uninstaller Script**:
+#### Using fetch
 
-   ```sh
-   ./uninstaller.sh
-   ```
+```sh
+sh -c "$(fetch -o - https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh)"
+```
 
 
 This will remove the `create-poetry-app` installation and any configurations added during the setup.
