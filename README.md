@@ -296,11 +296,38 @@ If `create-poetry-app` was not installed via `install.sh`, you can manually set 
 
 By following these steps, you'll make `create-poetry-app` easily accessible, streamlining your workflow and allowing you to set up new Poetry projects quickly and efficiently from anywhere in your terminal.
 
+---
+
 ## Uninstallation
 
 To uninstall `create-poetry-app`, you can use the `uninstaller.sh` script. Follow these steps:
 
+
+If `create-poetry-app` is already installed in the `$HOME/.create-poetry-app` directory, you can run the `uninstaller.sh` script directly from that directory:
+
+1. **Navigate to the Installation Directory**:
+
+   ```sh
+   cd $HOME/.create-poetry-app
+   ```
+
+2. **Make the Script Executable (if not already executable)**:
+
+   ```sh
+   chmod +x uninstaller.sh
+   ```
+
+3. **Run the Uninstaller Script**:
+
+   ```sh
+   ./uninstaller.sh
+   ```
+
+OR
+
 1. **Download the Uninstaller Script**:
+
+   If you don't already have the `uninstaller.sh` script, download it from the repository:
 
    ```sh
    curl -O https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/uninstaller.sh
@@ -317,6 +344,7 @@ To uninstall `create-poetry-app`, you can use the `uninstaller.sh` script. Follo
    ```sh
    ./uninstaller.sh
    ```
+
 
 This will remove the `create-poetry-app` installation and any configurations added during the setup.
 
