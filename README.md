@@ -82,23 +82,6 @@ sh -c "$(wget -O- https://raw.githubusercontent.com/aifirstd3v/create-poetry-app
 sh -c "$(fetch -o - https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/install.sh)"
 ```
 
-
----
-
-## How to Use (Mannual Steps):
-
-1. **Clone or Download the Script**: Get the script from this GitHub repository.
-2. **Make the Script Executable**:
-   ```sh
-   chmod +x create-poetry-project
-   ```
-3. **Run the Script**:
-   ```sh
-   create-poetry-project
-   ```
-4. **Follow the Prompts**: Enter the required information when prompted.
-5. **Start Coding**: Your new Poetry project is ready to go!
-
 ---
 
 ## Command-Line Options
