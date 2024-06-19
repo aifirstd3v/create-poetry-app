@@ -6,7 +6,7 @@
 
 Are you tired of the cumbersome process of setting up a new Python project with specific requirements? Look no further! Our shell script automates the entire process, making your life as a developer smoother and more efficient. Introducing the **Ultimate Poetry Project Setup Script**!
 
-`The issue this project is trying to address was kind of resolved in version 2.0 of Poetry, so I believe it will be helpful to users who are still using version 1.x. The ultimate goal of this project is to upgrade it into a project creation tool with advanced and diverse features, similar to tools like create-react-app and create-next-app, which even the latest version of Poetry does not provide.`
+`The issue this project is trying to address was kind of resolved in the lastest version of Poetry, so I believe it will be helpful to users who are still using current version 1.x. The ultimate goal of this project is to upgrade it into a project creation tool with advanced and diverse features, similar to tools like create-react-app and create-next-app, which even the latest version of Poetry does not provide.`
 
 ---
 
@@ -32,7 +32,57 @@ Setting up a Python project with specific requirements can be a hassle. Our scri
 
 ---
 
-## How to Use:
+## Prerequisites
+
+Before installing `create-poetry-app`, ensure you have the following dependencies installed on your system:
+
+- **Zsh**: Version 4.3.9 or newer is required, but we recommend version 5.0.8 or newer. To check if Zsh is installed and see its version, run:
+  ```sh
+  zsh --version
+  ```
+- **curl** or **wget**: These tools are used to download the installation script.
+  - To check if `curl` is installed, run:
+    ```sh
+    curl --version
+    ```
+  - To check if `wget` is installed, run:
+    ```sh
+    wget --version
+    ```
+
+- **git**: Version 2.4.11 or higher is recommended. To check if git is installed and see its version, run:
+  ```sh
+  git --version
+  ```
+
+## Basic Installation using installer script
+
+`create-poetry-app` can be installed by running one of the following commands in your terminal. You can install it via the command-line with either `curl`, `wget`, or another similar tool.
+
+### Method
+
+#### Using curl
+
+```sh
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/install.sh)"
+```
+
+#### Using wget
+
+```sh
+sh -c "$(wget -O- https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/install.sh)"
+```
+
+#### Using fetch
+
+```sh
+sh -c "$(fetch -o - https://raw.githubusercontent.com/aifirstd3v/create-poetry-app/main/install.sh)"
+```
+
+
+---
+
+## How to Use (Mannual Steps):
 
 1. **Clone or Download the Script**: Get the script from this GitHub repository.
 2. **Make the Script Executable**:
