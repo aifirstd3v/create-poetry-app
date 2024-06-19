@@ -34,3 +34,20 @@
 - **Python Version Check**: Fixed issues with detecting and using the correct Python version installed on the system.
 - **Template Loading**: Fixed loading and applying template dependencies from `config.toml`.
 
+
+
+## [v1.1.0] - 2024-06-20
+
+### Added
+- **Command-Line and Interactive Prompts**: Added command-line options and interactive prompts for selecting project templates.
+
+### Changed
+- **Virtual Environment Path Handling**:
+  - Corrected path handling to avoid double project name inclusion.
+  - Added checks for existing project directories and prompts for removal if necessary.
+- **Environment Variable Management**: Improved handling of environment variables related to virtual environments, ensuring they are correctly unset when deactivating.
+- **Debugging Output**: Enhanced debugging output for better traceability and debugging during virtual environment activation.
+
+### Fixed
+- **Fixed Issues with Project Path**: Resolved issues with project path handling and virtual environment creation.
+- **Improved Logging**: Added detailed logging for virtual environment activation steps, aiding in troubleshooting.
